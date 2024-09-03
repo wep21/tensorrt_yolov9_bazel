@@ -1,4 +1,4 @@
-load("@tensorrt_yolox//repositories:repositories.bzl", "repositories")
+load("@tensorrt_yolo//repositories:repositories.bzl", "repositories")
 
 def _non_module_deps_impl(ctx):
     repositories()

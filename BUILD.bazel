@@ -1,9 +1,36 @@
-cc_binary(
-    name = "main",
+cc_library(
+    name = "engine",
     srcs = [
-        "src/main.cpp",
+        "src/engine.cpp",
+        "src/engine.hpp",
     ],
     deps = [
+        "@rules_cuda//cuda:runtime",
+        "@tensorrt//:nvinfer",
+        "@tensorrt//:nvinferplugin",
+    ],
+)
+
+cc_binary(
+    name = "video_demo",
+    srcs = [
+        "src/video_demo.cpp",
+    ],
+    deps = [
+        "engine",
+	"@cvcuda",
+        "@opencv",
+    ],
+)
+
+cc_binary(
+    name = "image_demo",
+    srcs = [
+        "src/image_demo.cpp",
+    ],
+    deps = [
+        "engine",
+	"@cvcuda",
         "@opencv",
     ],
 )

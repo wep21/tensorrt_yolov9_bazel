@@ -1,0 +1,14 @@
+cc_library(
+    name = "cvcuda",
+    srcs = [
+        "lib/libcvcuda.so",
+        "lib/libnvcv_types.so",
+    ],
+    hdrs = glob([
+        "include/cvcuda/**/*.h*",
+        "include/nvcv/**/*.inc",
+        "include/nvcv/**/*.h*",
+    ]),
+    includes = ["include"],
+    visibility = ["//visibility:public"],
+)

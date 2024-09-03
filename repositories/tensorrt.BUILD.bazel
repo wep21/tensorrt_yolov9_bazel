@@ -1,0 +1,98 @@
+load("@rules_cc//cc:defs.bzl", "cc_import", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "aarch64_linux",
+    constraint_values = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+)
+
+cc_library(
+    name = "nvinfer_headers",
+    hdrs = select({
+        ":aarch64_linux": glob(
+            [
+                "include/aarch64-linux-gnu/NvInfer*.h",
+            ],
+            exclude = [
+                "include/aarch64-linux-gnu/NvInferPlugin.h",
+                "include/aarch64-linux-gnu/NvInferPluginUtils.h",
+            ],
+        ),
+        "//conditions:default": glob(
+            [
+                "include/x86_64-linux-gnu/NvInfer*.h",
+            ],
+            exclude = [
+                "include/x86_64-linux-gnu/NvInferPlugin.h",
+                "include/x86_64-linux-gnu/NvInferPluginUtils.h",
+            ],
+        ),
+    }),
+    includes = select({
+        ":aarch64_linux": ["include/aarch64-linux-gnu"],
+        "//conditions:default": ["include/x86_64-linux-gnu/"],
+    }),
+    visibility = ["//visibility:private"],
+)
+
+cc_import(
+    name = "nvinfer_static_lib",
+    static_library = select({
+        ":aarch64_linux": "lib/aarch64-linux-gnu/libnvinfer_static.a",
+        "//conditions:default": "lib/x86_64-linux-gnu/libnvinfer_static.a",
+    }),
+    visibility = ["//visibility:private"],
+)
+
+cc_import(
+    name = "nvinfer_lib",
+    shared_library = select({
+        ":aarch64_linux": "lib/aarch64-linux-gnu/libnvinfer.so",
+        "//conditions:default": "lib/x86_64-linux-gnu/libnvinfer.so",
+    }),
+    visibility = ["//visibility:private"],
+)
+
+cc_library(
+    name = "nvinfer",
+    visibility = ["//visibility:public"],
+    deps = [
+        "nvinfer_headers",
+        "nvinfer_lib",
+        "@rules_cuda//cuda:runtime",
+    ],
+)
+
+cc_library(
+    name = "nvinferplugin",
+    srcs = select({
+        ":aarch64_linux": ["lib/aarch64-linux-gnu/libnvinfer_plugin.so"],
+        "//conditions:default": ["lib/x86_64-linux-gnu/libnvinfer_plugin.so"],
+    }),
+    hdrs = select({
+        ":aarch64_linux": glob(["include/aarch64-linux-gnu/NvInferPlugin*.h"]),
+        "//conditions:default": glob(["include/x86_64-linux-gnu/NvInferPlugin*.h"]),
+    }),
+    copts = [
+        "-pthread",
+    ],
+    includes = select({
+        ":aarch64_linux": ["include/aarch64-linux-gnu/"],
+        "//conditions:default": ["include/x86_64-linux-gnu/"],
+    }),
+    linkopts = [
+        "-lpthread",
+    ] + select({
+        ":aarch64_linux": ["-Wl,--no-as-needed -ldl -lrt -Wl,--as-needed"],
+        "//conditions:default": [],
+    }),
+    deps = [
+        "nvinfer",
+        "@rules_cuda//cuda:runtime",
+    ],
+    alwayslink = True,
+)
