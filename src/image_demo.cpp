@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
   dims.d[1] = 3;
   dims.d[2] = 640;
   dims.d[3] = 640;
-  engine->set_input_shape("images", dims);
+  engine->set_input_shape(engine->get_io_tensor_name(0), dims);
 
   cv::Mat frame = cv::imread(argv[2]);
   nvcv::TensorDataStridedCuda::Buffer input_buffer;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     nvcv::TensorShape{input_layer_reqs.shape, input_layer_reqs.rank, input_layer_reqs.layout},
     nvcv::DataType{input_layer_reqs.dtype}, input_layer_buffer);
   nvcv::Tensor input_layer_tensor = TensorWrapData(input_layer_data);
-  engine->set_tensor_address("images", input_layer_buffer.basePtr);
+  engine->set_tensor_address(engine->get_io_tensor_name(0), input_layer_buffer.basePtr);
 
   int* num_detections;
   float* boxes;

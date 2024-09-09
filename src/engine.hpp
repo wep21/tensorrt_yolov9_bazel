@@ -40,6 +40,7 @@ public:
   ~Engine();
 
   bool infer(cudaStream_t stream);
+  const char* get_io_tensor_name(const int32_t index) const;
   bool set_tensor_address(const char* name, void* data);
   bool set_input_shape(const char* name, nvinfer1::Dims const& dims);
 };

@@ -65,6 +65,10 @@ bool Engine::infer(cudaStream_t stream) {
   return status;
 }
 
+const char* Engine::get_io_tensor_name(const int32_t index) const {
+  return engine_->getIOTensorName(index);
+}
+
 bool Engine::set_tensor_address(const char* name, void* data) {
   auto status = context_->setTensorAddress(name, data);
   return status;

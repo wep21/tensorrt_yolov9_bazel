@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
     nvcv::TensorShape{input_layer_reqs.shape, input_layer_reqs.rank, input_layer_reqs.layout},
     nvcv::DataType{input_layer_reqs.dtype}, input_layer_buffer);
   nvcv::Tensor input_layer_tensor = TensorWrapData(input_layer_data);
-  engine->set_tensor_address("images", input_layer_buffer.basePtr);
+  engine->set_tensor_address(engine->get_io_tensor_name(0), input_layer_buffer.basePtr);
 
   int* num_detections;
   float* boxes;
