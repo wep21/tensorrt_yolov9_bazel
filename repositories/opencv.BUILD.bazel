@@ -1,16 +1,41 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "aarch64_linux",
+    constraint_values = [
+        "@platforms//cpu:aarch64",
+        "@platforms//os:linux",
+    ],
+)
+
 cc_library(
     name = "opencv",
-    srcs = glob(
-        [
-            "lib/x86_64-linux-gnu/libopencv_core.so",
-            "lib/x86_64-linux-gnu/libopencv_dnn.so",
-            "lib/x86_64-linux-gnu/libopencv_highgui.so",
-            "lib/x86_64-linux-gnu/libopencv_imgcodecs.so",
-            "lib/x86_64-linux-gnu/libopencv_imgproc.so",
-            "lib/x86_64-linux-gnu/libopencv_video.so",
-            "lib/x86_64-linux-gnu/libopencv_videoio.so",
-        ],
-    ),
+    srcs = select({
+        ":aarch64_linux": glob(
+            [
+                "lib/libopencv_core.so",
+                "lib/libopencv_dnn.so",
+                "lib/libopencv_highgui.so",
+                "lib/libopencv_imgcodecs.so",
+                "lib/libopencv_imgproc.so",
+                "lib/libopencv_video.so",
+                "lib/libopencv_videoio.so",
+            ],
+        ),
+        "//conditions:default": glob(
+            [
+                "lib/x86_64-linux-gnu/libopencv_core.so",
+                "lib/x86_64-linux-gnu/libopencv_dnn.so",
+                "lib/x86_64-linux-gnu/libopencv_highgui.so",
+                "lib/x86_64-linux-gnu/libopencv_imgcodecs.so",
+                "lib/x86_64-linux-gnu/libopencv_imgproc.so",
+                "lib/x86_64-linux-gnu/libopencv_video.so",
+                "lib/x86_64-linux-gnu/libopencv_videoio.so",
+            ],
+        ),
+    }),
     hdrs = glob(["include/opencv4/opencv2/**/*.h*"]),
     includes = ["include/opencv4"],
     visibility = ["//visibility:public"],
