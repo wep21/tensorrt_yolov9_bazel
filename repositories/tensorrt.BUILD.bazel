@@ -13,24 +13,16 @@ config_setting(
 cc_library(
     name = "nvinfer_headers",
     hdrs = select({
-        ":aarch64_linux": glob(
-            [
-                "include/aarch64-linux-gnu/NvInfer*.h",
-            ],
-            exclude = [
-                "include/aarch64-linux-gnu/NvInferPlugin.h",
-                "include/aarch64-linux-gnu/NvInferPluginUtils.h",
-            ],
-        ),
-        "//conditions:default": glob(
-            [
-                "include/x86_64-linux-gnu/NvInfer*.h",
-            ],
-            exclude = [
-                "include/x86_64-linux-gnu/NvInferPlugin.h",
-                "include/x86_64-linux-gnu/NvInferPluginUtils.h",
-            ],
-        ),
+        ":aarch64_linux": glob([
+            "include/aarch64-linux-gnu/NvInfer*.h",
+        ], exclude = [
+            "include/aarch64-linux-gnu/NvInferPlugin*.h",
+        ], allow_empty = True),
+        "//conditions:default": glob([
+            "include/x86_64-linux-gnu/NvInfer*.h",
+        ], exclude = [
+            "include/x86_64-linux-gnu/NvInferPlugin*.h",
+        ], allow_empty = True),
     }),
     includes = select({
         ":aarch64_linux": ["include/aarch64-linux-gnu"],
@@ -74,8 +66,12 @@ cc_library(
         "//conditions:default": ["lib/x86_64-linux-gnu/libnvinfer_plugin.so"],
     }),
     hdrs = select({
-        ":aarch64_linux": glob(["include/aarch64-linux-gnu/NvInferPlugin*.h"]),
-        "//conditions:default": glob(["include/x86_64-linux-gnu/NvInferPlugin*.h"]),
+        ":aarch64_linux": glob([
+            "include/aarch64-linux-gnu/NvInferPlugin*.h",
+        ], allow_empty = True),
+        "//conditions:default": glob([
+            "include/x86_64-linux-gnu/NvInferPlugin*.h",
+        ], allow_empty = True),
     }),
     copts = [
         "-pthread",
