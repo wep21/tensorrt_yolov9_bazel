@@ -18,7 +18,8 @@ cc_binary(
     ],
     deps = [
         "engine",
-	"@cvcuda",
+        "@byte_track_eigen",
+        "@cvcuda",
         "@opencv",
     ],
 )
@@ -30,7 +31,7 @@ cc_binary(
     ],
     deps = [
         "engine",
-	"@cvcuda",
+        "@cvcuda",
         "@opencv",
     ],
 )
