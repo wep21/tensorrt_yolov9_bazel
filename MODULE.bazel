@@ -1,9 +1,10 @@
 module(name = "tensorrt_yolo")
 
-bazel_dep(name = "byte_track_eigen", version = "2.1.0")
+bazel_dep(name = "byte_track_eigen", version = "2.1.0.bcr.1")
+bazel_dep(name = "eigen", version = "3.4.0.bcr.3")
 bazel_dep(name = "platforms", version = "0.0.11")
 bazel_dep(name = "rules_cc", version = "0.1.1")
-bazel_dep(name = "rules_cuda", version = "0.2.3")
+bazel_dep(name = "rules_cuda", version = "0.2.4")
 
 cuda = use_extension("@rules_cuda//cuda:extensions.bzl", "toolchain")
 cuda.local_toolchain(
